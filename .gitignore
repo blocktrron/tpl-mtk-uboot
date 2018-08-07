@@ -1,0 +1,13 @@
+*.a
+*.o
+.depend
+.config
+buildroot-gcc342/
+tools/mkimage
+httpd/fsdata.c
+autoconf.h
+u-boot
+u-boot.map
+u-boot.srec
+uboot.bin
+System.map
