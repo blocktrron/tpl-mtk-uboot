@@ -18,7 +18,7 @@ if [ -z "$BOARD" ]; then
 	exit 1
 fi
 
-rm .config
+rm .config autoconf.h
 
 if [ ! -d "$BUILDROOT" ]; then
 	tar -xjf ${BUILDROOT}.tar.bz2
