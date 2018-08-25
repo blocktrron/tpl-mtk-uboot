@@ -2206,6 +2206,42 @@ __attribute__((nomips16)) void board_init_r (gd_t *id, ulong dest_addr)
 		}		
 	}
 #endif
+
+#if defined(DUAL_UBOOT_SUPPORT) && !defined(FACTORY_UBOOT)
+	if (BootType == '3')
+	{
+		int icount = 50;/*wait for 5 sec.*/
+		int data;
+		do
+		{
+			getGpioData(37, &data);
+			if (!data)/*reset button pressed*/
+			{
+				icount--;
+				udelay (100000);
+				printf(".");
+			}
+			else
+			{
+				printf("\ncontinue to starting system.\n");
+				break;
+			}
+		} while(icount > 0);
+
+		if (icount == 0)
+		{
+			ubootArgs pargs;
+			pargs.upgradeMark = SYS_UPGRADE_MARK;
+			if (raspi_erase_write(&pargs, DUAL_UBOOT_ARGS_ADDR, sizeof(ubootArgs)))
+			{
+				return -1;
+			}
+			do_reset(NULL, 0, 0, NULL);
+		}
+
+	}
+#endif
+
 	if(BootType == '3') {
 #if defined(DUAL_UBOOT_SUPPORT) && defined(FACTORY_UBOOT)
 					void	(*uboot_sec)();

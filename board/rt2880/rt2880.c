@@ -1140,15 +1140,34 @@ int getGpioData(u32 gpio, u32 *data)
 #define RALINK_REG_PIODATA		(RALINK_PRGIO_ADDR + 0x20)
 int getGpioData(u32 gpio, u32 *data)
 {
+	u32 bit = 0;
+	u32 reg = 0;
 	u32 tmp = 0;
 
 	/* INPUT GPIO
 	 * GPIO38:Switch IRQ
 	 */
-	
+
+	if (gpio <= 31)
+ 	{
+ 		/* RALINK_REG_PIODATA for GPIO 0~31 */
+ 		reg = RALINK_REG_PIO6332DATA;
+ 		bit = (1 << gpio);
+ 	}
+ 	else if (gpio <= 63)
+ 	{
+ 		reg = RALINK_REG_PIO3100DATA;
+ 		bit = (1 << (gpio - 32));
+ 	}
+ 	else if (gpio <= 95)
+ 	{
+ 		reg = RALINK_REG_PIO9564DATA;
+ 		bit = (1 << (gpio - 64));
+ 	}
+
 	/* Get to reg base on bit */
-	tmp = le32_to_cpu(*(volatile u32 *)(RALINK_REG_PIO6332DATA));
-	if (( 1 << (38 - 32)) & tmp)
+	tmp = le32_to_cpu(*(volatile u32 *)(reg));
+	if (bit & tmp)
 	{
 		*data = 1;
 	}
